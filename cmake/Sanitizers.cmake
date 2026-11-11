@@ -1,0 +1,13 @@
+function(cml_apply_sanitizers target)
+    if(NOT CML_ENABLE_SANITIZERS)
+        return()
+    endif()
+
+    if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
+        set(flags -fsanitize=address,undefined -fno-omit-frame-pointer -fno-sanitize-recover=all)
+        target_compile_options(${target} PUBLIC $<$<COMPILE_LANGUAGE:CXX>:${flags}>)
+        target_link_options(${target} PUBLIC ${flags})
+    else()
+        message(WARNING "Sanitizers not supported for ${CMAKE_CXX_COMPILER_ID}")
+    endif()
+endfunction()
