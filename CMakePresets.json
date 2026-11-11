@@ -1,0 +1,56 @@
+{
+    "version": 6,
+    "cmakeMinimumRequired": { "major": 3, "minor": 24, "patch": 0 },
+    "configurePresets": [
+        {
+            "name": "base",
+            "hidden": true,
+            "generator": "Ninja",
+            "binaryDir": "${sourceDir}/build/${presetName}"
+        },
+        {
+            "name": "debug",
+            "inherits": "base",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Debug",
+                "CML_BUILD_BENCHMARKS": "OFF"
+            }
+        },
+        {
+            "name": "asan",
+            "inherits": "base",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Debug",
+                "CML_ENABLE_SANITIZERS": "ON",
+                "CML_BUILD_BENCHMARKS": "OFF"
+            }
+        },
+        {
+            "name": "release",
+            "inherits": "base",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Release",
+                "CMAKE_CXX_FLAGS_RELEASE": "-O3 -march=native -DNDEBUG"
+            }
+        },
+        {
+            "name": "ci",
+            "inherits": "asan",
+            "cacheVariables": {
+                "CML_WARNINGS_AS_ERRORS": "ON",
+                "CML_BUILD_BENCHMARKS": "ON"
+            }
+        }
+    ],
+    "buildPresets": [
+        { "name": "debug",   "configurePreset": "debug" },
+        { "name": "asan",    "configurePreset": "asan" },
+        { "name": "release", "configurePreset": "release" },
+        { "name": "ci",      "configurePreset": "ci" }
+    ],
+    "testPresets": [
+        { "name": "debug", "configurePreset": "debug", "output": { "outputOnFailure": true } },
+        { "name": "asan",  "configurePreset": "asan",  "output": { "outputOnFailure": true } },
+        { "name": "ci",    "configurePreset": "ci",    "output": { "outputOnFailure": true } }
+    ]
+}
